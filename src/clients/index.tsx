@@ -18,6 +18,7 @@ import {
 import TopBarAuthenticated from '../shared/components/TopBarAuthenticated'
 import DataTable from './components/DataTable'
 import TabPanel from './components/TabPanel'
+import Form from './components/Form'
 
 import useCreateClientHook from './hooks/useCreateClientHook'
 import useUpdateClientHook from './hooks/useUpdateClientHook'
@@ -28,6 +29,21 @@ import useSearchClientHook from './hooks/useSearchClientHook'
 const ClientsPage = () => {
   const [rowsIDSelected, setRowsIDSelected] = useState([] as number[])
   const [valueTab, setValueTab] = useState(0)
+
+  const handleChangeValueTab = (event: SyntheticEvent, newValue: number) => {
+    setValueTab(newValue)
+  }
+
+  const handleRowsSelected = (allRowsID: number[]): void => {
+    setRowsIDSelected(allRowsID)
+  }
+
+  const handleSetupListValueTab = () => {
+    setValueTab(0)
+  }
+  const handleSetupUpdateValueTab = () => {
+    setValueTab(2)
+  }
 
   const {
     rows,
@@ -61,6 +77,7 @@ const ClientsPage = () => {
     isLoading: isLoadingUpdate
   } = useUpdateClientHook({
     getRowOnUpdate: handleUpdateRow,
+    moveToListTab: handleSetupListValueTab,
     rowsIDSelected,
     rows
   })
@@ -80,23 +97,8 @@ const ClientsPage = () => {
     isLoadingDelete ||
     isLoadingUpdate
 
-  const handleChangeValueTab = (event: SyntheticEvent, newValue: number) => {
-    setValueTab(newValue)
-  }
-
-  const handleRowsSelected = (allRowsID: number[]): void => {
-    setRowsIDSelected(allRowsID)
-  }
-
-  const handleSetupListValueTab = () => {
-    setValueTab(0)
-  }
-  const handleSetupUpdateValueTab = () => {
-    setValueTab(2)
-  }
-
   return (
-    <>
+    <div>
      <Head>
         <title>Gerenciamento de Clients</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
@@ -117,66 +119,48 @@ const ClientsPage = () => {
                 </Tabs>
               </Box>
               <TabPanel value={valueTab} index={2}>
-                <Stack spacing={4}>
-                  <TextField
-                    id="name"
-                    label="Nome"
-                    variant="standard"
-                    error={!!errorsToUpdate.name}
-                    helperText={errorsToUpdate.phone && errorsToUpdate.name}
-                    onChange={handleChangeToUpdate}
-                    value={valuesToUpdate.name}
-                  />
-                  <TextField
-                    id="phone"
-                    label="Telefone"
-                    variant="standard"
-                    error={!!errorsToUpdate.phone}
-                    helperText={errorsToUpdate.phone && errorsToUpdate.phone}
-                    onChange={handleChangeToUpdate}
-                    value={valuesToUpdate.phone}
-                  />
-                  <Button
-                    variant="contained"
-                    onClick={handleUpdate}
-                    disabled={isLoading}
-                  >Atualizar</Button>
-                  <Button
-                    variant="outlined"
-                    onClick={() => handleSetupListValueTab()}
-                  >Cancelar</Button>
-                </Stack>
+                <Form
+                  name={{
+                    value: valuesToUpdate.name,
+                    error: errorsToUpdate.name,
+                    onChange: handleChangeToUpdate
+                  }}
+                  phone={{
+                    value: valuesToUpdate.phone,
+                    error: errorsToUpdate.phone,
+                    onChange: handleChangeToUpdate
+                  }}
+                  buttonSubmit={{
+                    onSubmit: handleUpdate,
+                    text: 'Atualizar'
+                  }}
+                  buttonCancel={{
+                    onCancel: handleSetupListValueTab
+                  }}
+                  isLoading={isLoading}
+                />
               </TabPanel>
               <TabPanel value={valueTab} index={1}>
-                <Stack spacing={4}>
-                  <TextField
-                    id="name"
-                    label="Nome"
-                    variant="standard"
-                    error={!!errors.name}
-                    helperText={errors.phone && errors.name}
-                    onChange={handleChange}
-                    value={values.name}
-                  />
-                  <TextField
-                    id="phone"
-                    label="Telefone"
-                    variant="standard"
-                    error={!!errors.phone}
-                    helperText={errors.phone && errors.phone}
-                    onChange={handleChange}
-                    value={values.phone}
-                  />
-                  <Button
-                    variant="contained"
-                    onClick={handleCreate}
-                    disabled={isLoading}
-                  >Inserir</Button>
-                  <Button
-                    variant="outlined"
-                    onClick={() => handleSetupListValueTab()}
-                  >Cancelar</Button>
-                </Stack>
+                <Form
+                  name={{
+                    value: values.name,
+                    error: errors.name,
+                    onChange: handleChange
+                  }}
+                  phone={{
+                    value: valuesToUpdate.phone,
+                    error: errors.phone,
+                    onChange: handleChange
+                  }}
+                  buttonSubmit={{
+                    onSubmit: handleCreate,
+                    text: 'Inserir'
+                  }}
+                  buttonCancel={{
+                    onCancel: handleSetupListValueTab
+                  }}
+                  isLoading={isLoading}
+                />
               </TabPanel>
               <TabPanel value={valueTab} index={0}>
                 <Stack spacing={4} direction='column'>
@@ -217,7 +201,7 @@ const ClientsPage = () => {
           </PaperCustom>
         </Content>
       </Container>
-    </>
+    </div>
   )
 }
 

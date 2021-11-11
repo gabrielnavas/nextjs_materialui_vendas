@@ -6,6 +6,7 @@ type Props = {
   rowsIDSelected: number[]
   rows: Row[]
   getRowOnUpdate(row:Row): void
+  moveToListTab: () => void
 }
 
 const useUpdateUpdateClientHook = (props: Props) => {
@@ -52,7 +53,7 @@ const useUpdateUpdateClientHook = (props: Props) => {
       props.getRowOnUpdate({
         id: data.id, name: data.name, phone: data.phone
       })
-      formik.resetForm()
+      props.moveToListTab()
     }
   })
 
