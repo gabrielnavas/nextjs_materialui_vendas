@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 type Props = {
   handleRowRemoveFromUI(rowsID: number[]): void
@@ -10,25 +10,27 @@ const useDeleteClientHook = (props: Props) => {
 
   const handleRemoveRows = async (rowsID: number[]): Promise<void> => {
     let error = false
-    
+
+    setIsLoading(true)
     for (const id of rowsID) {
       const response = await fetch(`http://127.0.0.1:8000/client/${id}`, {
         method: 'DELETE'
       })
-      if(response.status !== 204) {
+      if (response.status !== 204) {
         const data = await response.json()
-        console.error(data);
+        console.error(data)
         error = true
         break
-      } 
+      }
     }
-    if(!error) {
+    setIsLoading(false)
+
+    if (!error) {
       props.handleRowRemoveFromUI(rowsID)
       props.handleRowRemoveSearchUI(rowsID)
     }
   }
- 
-  
+
   return {
     isLoading,
     handleRemoveRows

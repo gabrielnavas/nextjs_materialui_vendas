@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { Row } from "./useGetAllClientHook"
+import { useState } from 'react'
+import { Row } from './useGetAllClientHook'
 
 type Props = {
   rowsExist: Row[]
@@ -10,20 +10,17 @@ const useSearchClientHook = (props: Props) => {
   const [rowsFetched, setRowsFetched] = useState([])
   const [isLoading, setIsLoading] = useState(false)
 
-  // to refactor
   const handleOnSearch = e => {
     setQuery(e.target.value)
   }
 
   const handleOnSubmitSearch = () => {
-    if(!query || query === '') {
+    if (!query || query === '') {
       setRowsFetched([])
       return
     }
     (async () => {
       const rowsFromRepository = await handleFetchRows(query)
-      console.log(rowsFromRepository);
-      
       setRowsFetched(rowsFromRepository)
     })()
   }
@@ -37,7 +34,7 @@ const useSearchClientHook = (props: Props) => {
     })
     const data = await response.json()
     setIsLoading(false)
-    if(response.status !== 200) {
+    if (response.status !== 200) {
       console.error(data)
       return
     }
